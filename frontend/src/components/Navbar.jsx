@@ -29,19 +29,18 @@ function Navbar() {
             </NavLink>
           </Show>
 
-          <Show when="signed-in">
+          <Show when="signed-out">
             <SignInButton mode="modal">
               <button className="text-matn hover:text-asosiy font-medium transition">
                 Kirish
               </button>
             </SignInButton>
-          </Show>
-
-          <SignUpButton mode="modal">
+            <SignUpButton mode="modal">
               <button className="bg-archazor text-ohaktosh px-4 py-2 rounded-lg hover:opacity-90 transition font-medium">
                 Ro'yxatdan o'tish
               </button>
           </SignUpButton>
+          </Show>
 
           <Show when="signed-in">
             <UserButton afterSignOutUrl="/" />
