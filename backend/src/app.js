@@ -1,41 +1,55 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const { clerkMiddleware, getAuth } = require('@clerk/express');
 
 const app = express();
 
 app.use(morgan('dev'));
-app.use(cors());
+app.use(cors( {
+  origin: "http://localhost:/5173"
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(clerkMiddleware());
+
+app.get('/whoami', (req, res) => {
+  const { userId, sessionId, sessionClaims } = getAuth(req);
+  res.json({
+    success: true,
+    data: {
+      userId,
+      sessionId,
+      hasClaims: !!sessionClaims,
+      authOnReq: req.auth ?? null,
+    },
+  });
+});
+
+const mountainRoutes = require('./routes/mountain.routes');
 
 app.get('/health', (req, res) => {
   res.json({
     success: true,
-    data: {
-      status: 'ok',
-      message: 'Backend ishladi!!!',
-      timestamp: new Date().toISOString()
-    }
+    data: { status: 'ok', timestamp: new Date().toISOString() },
   });
 });
 
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      name: 'Kolleksiya API',
-      version: '1.0.0',
-      endpoints: ['GET /health']
-    }
-  });
-});
+app.use('/mountains', mountainRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Endpoint topilmadi'
-  });
+  res.status(404).json({ success: false, error: 'Endpoint topilmadi' });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  if (err.name === 'ZodError') {
+    return res.status(400).json({ success: false, error: err.issues });
+  }
+  res.status(err.status || 500).json({ success: false, error: err.message });
 });
 
 module.exports = app;

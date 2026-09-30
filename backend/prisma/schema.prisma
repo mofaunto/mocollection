@@ -19,13 +19,13 @@ model Mountain {
   description String?
   imageUrl    String?
   status      String    @default("chiqilmagan")
-  rating      Int
-  userId      String //Clerk dan keladi
+  rating      Int?
+  userId      String   //Clerk dan keladi
   davlat      String
   location    String?
   balandlik   Int?
   qanchaVaqt  Int?
   dateHiked   DateTime @default(now())
-  maslahatBeraman Boolean
+  maslahatBeraman Boolean @default(true)
   createdAt   DateTime  @default(now())
 }
