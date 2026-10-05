@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+import ConnectionStatus from './components/ConnectionStatus';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
-import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           />
         </Route>
       </Routes>
+      <ConnectionStatus />
     </BrowserRouter>
   );
 }
